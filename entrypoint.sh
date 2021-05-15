@@ -1,2 +1,3 @@
 #!/bin/bash
-phpunit
+cd /app
+vendor/bin/phpunit

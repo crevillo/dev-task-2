@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y \
         zip \
   && docker-php-ext-install zip
 
-RUN composer require phpunit/phpunit --dev
-
 COPY ./ /app
+
+RUN cd /app && composer install
 
 ENTRYPOINT ["/app/entrypoint.sh"]
