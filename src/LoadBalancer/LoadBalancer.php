@@ -18,10 +18,14 @@ class LoadBalancer
 
     public function __construct(array $hosts, string $loadBalancerMode = 'rotation')
     {
+        $this->validateHostsLists($hosts);
         $this->hosts = $hosts;
         $this->loadBalancerMode = $loadBalancerMode;
     }
 
+    /**
+     * @param Request $request
+     */
     public function handleRequest(Request $request)
     {
         // following code goes against Open Solid Principle
@@ -37,13 +41,33 @@ class LoadBalancer
         $this->requestsReceived[] = $request;
     }
 
+    /**
+     * @return array|Host[]
+     */
     public function getHosts(): array
     {
         return $this->hosts;
     }
 
+    /**
+     * @return Request[]
+     */
     public function getRequestsReceived(): array
     {
         return $this->requestsReceived;
+    }
+
+    private function validateHostsLists(array $hosts)
+    {
+        $hostIds = array_map(function(Host $host) {
+            return $host->getId();
+        }, $hosts);
+
+        // if the count of unique identifiers is less than the number of hosts passed means that at least one of them is
+        // duped;
+
+        if (count(array_unique($hostIds)) < count($hosts)) {
+            throw new DuplicateHostIdentifierException('At least one of the hosts identifiers is duplicated');
+        }
     }
 }
