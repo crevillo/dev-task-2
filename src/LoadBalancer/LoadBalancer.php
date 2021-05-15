@@ -20,6 +20,7 @@ class LoadBalancer
     public function __construct(array $hosts, string $loadBalancerMode = 'rotation')
     {
         $this->validateHostsLists($hosts);
+        $this->validateLoadBalancerMode($loadBalancerMode);
         $this->hosts = $hosts;
         $this->loadBalancerMode = $loadBalancerMode;
     }
@@ -68,6 +69,13 @@ class LoadBalancer
         // duped;
         if (count(array_unique($hostIds)) < count($hosts)) {
             throw new DuplicateHostIdentifierException('At least one of the hosts identifiers is duplicated');
+        }
+    }
+
+    private function validateLoadBalancerMode($loadBalancerMode)
+    {
+        if (!in_array($loadBalancerMode, ['rotation', 'minimumLoad'])) {
+            throw new InvalidMethodException('Invalid load balacer method passed');
         }
     }
 }
