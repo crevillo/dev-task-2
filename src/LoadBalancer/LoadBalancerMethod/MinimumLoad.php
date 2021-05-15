@@ -32,4 +32,9 @@ class MinimumLoad implements LoadBalancerMethod
         usort($hosts, fn(Host $host1, Host $host2) => $host1->getLoad() <=> $host2->getLoad());
         return $hosts[0];
     }
+
+    public function getIdentifier(): string
+    {
+        return 'minimumLoad';
+    }
 }

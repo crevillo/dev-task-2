@@ -8,4 +8,6 @@ use LoadBalancer\Request;
 interface LoadBalancerMethod
 {
     public function balance(LoadBalancerEntity $balancer, Request $request): void;
+
+    public function getIdentifier(): string;
 }

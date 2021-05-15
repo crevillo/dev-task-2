@@ -19,4 +19,9 @@ class Rotation implements LoadBalancerMethod
 
         $hosts[$hostIndex]->handleRequest($request);
     }
+
+    public function getIdentifier(): string
+    {
+        return 'rotation';
+    }
 }

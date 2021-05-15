@@ -20,7 +20,7 @@ class RotationTest extends TestCase
             $host1,
             $host2,
             $host3,
-        ], 'rotation');
+        ], 'rotation', [new Rotation()]);
 
         $loadBalancer->handleRequest(new Request('r1'));
         $loadBalancer->handleRequest(new Request('r2'));
