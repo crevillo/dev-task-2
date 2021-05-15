@@ -28,8 +28,12 @@ class RotationTest extends TestCase
         $loadBalancer->handleRequest(new Request('r4'));
         $loadBalancer->handleRequest(new Request('r5'));
 
-        $this->assertEquals(2, $host1->getHandledRequests());
-        $this->assertEquals(2, $host2->getHandledRequests());
-        $this->assertEquals(1, $host3->getHandledRequests());
+        $this->assertEquals(2, count($host1->getHandledRequests()));
+        $this->assertEquals(2, count($host2->getHandledRequests()));
+        $this->assertEquals(1, count($host3->getHandledRequests()));
+
+        $this->assertEquals('r1', $host1->getHandledRequests()[0]->getId());
+        $this->assertEquals('r4', $host1->getHandledRequests()[1]->getId());
+        $this->assertEquals('r5', $host2->getHandledRequests()[1]->getId());
     }
 }

@@ -15,7 +15,7 @@ class Rotation implements LoadBalancerMethod
     {
         $hosts = $balancer->getHosts();
 
-        $hostIndex = $balancer->getRequestsReceived() % count($hosts);
+        $hostIndex = count($balancer->getRequestsReceived()) % count($hosts);
 
         $hosts[$hostIndex]->handleRequest($request);
     }

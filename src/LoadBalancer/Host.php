@@ -6,7 +6,8 @@ class Host
 {
     private float $load = 0;
 
-    private int $handledRequests = 0;
+    /** @var Request[]  */
+    private array $handledRequests = [];
 
     private string $id;
 
@@ -23,11 +24,16 @@ class Host
 
     public function handleRequest(Request $request)
     {
-        $this->handledRequests++;
+        $this->handledRequests[] = $request;
     }
 
-    public function getHandledRequests(): int
+    public function getHandledRequests(): array
     {
         return $this->handledRequests;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

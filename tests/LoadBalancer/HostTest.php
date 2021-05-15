@@ -26,6 +26,6 @@ class HostTest extends TestCase
         $host->handleRequest($request2);
 
         $handledRequests = $host->getHandledRequests();
-        $this->assertEquals(3, $handledRequests);
+        $this->assertEquals(3, count($handledRequests));
     }
 }
