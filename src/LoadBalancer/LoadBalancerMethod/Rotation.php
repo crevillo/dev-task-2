@@ -3,11 +3,20 @@
 namespace LoadBalancer\LoadBalancerMethod;
 
 use LoadBalancer\LoadBalancer;
-use LoadBalancer\LoadBalancerMethod\LoadBalancer as LoadBalancerMethod;
+use LoadBalancer\Request;
 
 class Rotation implements LoadBalancerMethod
 {
-    public function balance(LoadBalancer $balancer)
+    /**
+     * We can now how many requests the balancer has received.
+     * Is a matter to use mod operator to determine which host should receive the request
+     */
+    public function balance(LoadBalancer $balancer, Request $request): void
     {
+        $hosts = $balancer->getHosts();
+
+        $hostIndex = $balancer->getRequestsReceived() % count($hosts);
+
+        $hosts[$hostIndex]->handleRequest($request);
     }
 }

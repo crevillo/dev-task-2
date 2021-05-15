@@ -13,6 +13,8 @@ class LoadBalancer
 
     private string $loadBalancerMode;
 
+    private int $requestsReceived = 0;
+
     public function __construct(array $hosts, string $loadBalancerMode = 'rotation')
     {
         $this->hosts = $hosts;
@@ -30,11 +32,17 @@ class LoadBalancer
 
         }
 
-        $loadBalancer->balance($this);
+        $loadBalancer->balance($this, $request);
+        $this->requestsReceived++;
     }
 
     public function getHosts()
     {
         return $this->hosts;
+    }
+
+    public function getRequestsReceived(): int
+    {
+        return $this->requestsReceived;
     }
 }
