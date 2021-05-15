@@ -13,6 +13,10 @@ class Host
 
     public function __construct(string $id, float $load = 0)
     {
+        if (empty($id)) {
+            throw new BadHostIdentifierException('Host id cannot be empty');
+        }
+
         $this->id = $id;
         $this->load = $load;
     }

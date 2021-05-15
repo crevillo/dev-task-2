@@ -2,6 +2,7 @@
 
 namespace tests\LoadBalancer;
 
+use LoadBalancer\BadHostIdentifierException;
 use LoadBalancer\Host;
 use LoadBalancer\Request;
 use PHPUnit\Framework\TestCase;
@@ -27,5 +28,12 @@ class HostTest extends TestCase
 
         $handledRequests = $host->getHandledRequests();
         $this->assertEquals(3, count($handledRequests));
+    }
+
+    public function testThrowExceptionIfEmptyIdentifierPassed()
+    {
+        $this->expectException(BadHostIdentifierException::class);
+
+        (new Host(''));
     }
 }
