@@ -2,6 +2,7 @@
 
 namespace LoadBalancer;
 
+use LoadBalancer\LoadBalancerMethod\MinimumLoad;
 use LoadBalancer\LoadBalancerMethod\Rotation;
 
 class LoadBalancer
@@ -33,8 +34,8 @@ class LoadBalancer
         // implemented in this other branch
         if ($this->loadBalancerMode === 'rotation') {
             $loadBalancer = new Rotation();
-        } elseif ($this->loadBalancerMode === 'minimumload') {
-
+        } elseif ($this->loadBalancerMode === 'minimumLoad') {
+            $loadBalancer = new MinimumLoad();
         }
 
         $loadBalancer->balance($this, $request);
@@ -65,7 +66,6 @@ class LoadBalancer
 
         // if the count of unique identifiers is less than the number of hosts passed means that at least one of them is
         // duped;
-
         if (count(array_unique($hostIds)) < count($hosts)) {
             throw new DuplicateHostIdentifierException('At least one of the hosts identifiers is duplicated');
         }
