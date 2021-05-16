@@ -4,6 +4,7 @@ namespace tests\LoadBalancer\LoadBalancerMethod;
 
 use LoadBalancer\Host;
 use LoadBalancer\LoadBalancer;
+use LoadBalancer\LoadBalancerMethod\MinimumLoad;
 use LoadBalancer\Request;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +30,7 @@ class MinimumLoadTest extends TestCase
      */
     public function testMiminumLoadBalance($hostsList, $hostIndex)
     {
-        $loadBalancer = new LoadBalancer($hostsList, 'minimumLoad');
+        $loadBalancer = new LoadBalancer($hostsList, 'minimumLoad', [new MinimumLoad()]);
         $loadBalancer->handleRequest(new Request('r1'));
         $this->assertCount(1, $loadBalancer->getHosts()[$hostIndex]->getHandledRequests());
     }

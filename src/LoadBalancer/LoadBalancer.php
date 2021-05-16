@@ -2,6 +2,7 @@
 
 namespace LoadBalancer;
 
+use LoadBalancer\LoadBalancerMethod\LoadBalancerMethod;
 use LoadBalancer\LoadBalancerMethod\MinimumLoad;
 use LoadBalancer\LoadBalancerMethod\Rotation;
 
@@ -17,12 +18,17 @@ class LoadBalancer
     /** @var Request[] */
     private array $requestsReceived = [];
 
-    public function __construct(array $hosts, string $loadBalancerMode = 'rotation')
+    /** @var LoadBalancerMethod[] */
+    private array $availableMethods = [];
+
+    public function __construct(array $hosts, string $loadBalancerMode = 'rotation', array $availableMethods = [])
     {
         $this->validateHostsLists($hosts);
-        $this->validateLoadBalancerMode($loadBalancerMode);
         $this->hosts = $hosts;
         $this->loadBalancerMode = $loadBalancerMode;
+
+        $this->availableMethods = $this->buildAvailableMethodsList($availableMethods);
+        $this->validateLoadBalancerMode($loadBalancerMode);
     }
 
     /**
@@ -30,14 +36,7 @@ class LoadBalancer
      */
     public function handleRequest(Request $request)
     {
-        // following code goes against Open Solid Principle
-        // a better solution could consist in passing all the rotators to the ctor
-        // implemented in this other branch
-        if ($this->loadBalancerMode === 'rotation') {
-            $loadBalancer = new Rotation();
-        } elseif ($this->loadBalancerMode === 'minimumLoad') {
-            $loadBalancer = new MinimumLoad();
-        }
+        $loadBalancer = $this->availableMethods[$this->loadBalancerMode];
 
         $loadBalancer->balance($this, $request);
         $this->requestsReceived[] = $request;
@@ -74,8 +73,21 @@ class LoadBalancer
 
     private function validateLoadBalancerMode($loadBalancerMode)
     {
-        if (!in_array($loadBalancerMode, ['rotation', 'minimumLoad'])) {
-            throw new InvalidMethodException('Invalid load balacer method passed');
+        if (!in_array($loadBalancerMode, array_keys($this->availableMethods))) {
+            throw new InvalidMethodException('Invalid load balancer method passed');
         }
+    }
+
+    private function buildAvailableMethodsList(array $loadBalancerMethods)
+    {
+        $keys = array_map(function(LoadBalancerMethod $lbm) {
+            return $lbm->getIdentifier();
+        }, $loadBalancerMethods);
+
+        $values = array_map(function(LoadBalancerMethod $lbm) {
+            return $lbm;
+        }, $loadBalancerMethods);
+
+        return array_combine($keys, $values);
     }
 }
